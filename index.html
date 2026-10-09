@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GESTUS · Tecnologia assistiva através do olhar</title>
+<meta name="description" content="GESTUS é um software de tecnologia assistiva que transforma o olhar e as piscadas em comunicação e controle do computador usando apenas uma webcam comum. Pesquisa e desenvolvimento na UFC.">
+<meta name="theme-color" content="#040A16">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GESTUS: tecnologia assistiva através do olhar">
+<meta property="og:description" content="Comunicação e controle do computador pelo olhar, com uma webcam comum. Projeto da UFC.">
+<meta property="og:image" content="assets/img/hero-olho.webp">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abismo:#040A16;
+  --painel:#0A1830;
+  --linha:#1B3358;
+  --azul:#1FA2FF;
+  --azul-claro:#7CC8FF;
+  --gelo:#B7CDE6;
+  --branco:#F2F7FD;
+  --display:"Sora",system-ui,sans-serif;
+  --texto:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif;
+  --max:1120px;
+  --gutter:clamp(16px,4vw,40px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--abismo);color:var(--branco);font-family:var(--texto);font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--azul);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+h1,h2,h3{font-family:var(--display);line-height:1.12;letter-spacing:-.02em}
+h2{font-size:clamp(30px,4.2vw,46px);font-weight:700;max-width:18ch}
+h3{font-size:20px;font-weight:600;letter-spacing:-.01em}
+p{max-width:62ch}
+.muted{color:var(--gelo)}
+.lead{font-size:clamp(18px,2vw,21px);color:var(--gelo)}
+section{padding:clamp(72px,10vw,128px) 0}
+.sec-head{display:grid;gap:18px;margin-bottom:clamp(36px,5vw,56px)}
+
+/* Moldura de detecção: o motivo visual do site */
+.frame{position:relative;padding:10px}
+.frame::before{content:"";position:absolute;inset:0;pointer-events:none;
+  --c:var(--azul);--l:22px;--t:2px;
+  background:
+    linear-gradient(var(--c),var(--c)) top left/var(--l) var(--t),
+    linear-gradient(var(--c),var(--c)) top left/var(--t) var(--l),
+    linear-gradient(var(--c),var(--c)) top right/var(--l) var(--t),
+    linear-gradient(var(--c),var(--c)) top right/var(--t) var(--l),
+    linear-gradient(var(--c),var(--c)) bottom left/var(--l) var(--t),
+    linear-gradient(var(--c),var(--c)) bottom left/var(--t) var(--l),
+    linear-gradient(var(--c),var(--c)) bottom right/var(--l) var(--t),
+    linear-gradient(var(--c),var(--c)) bottom right/var(--t) var(--l);
+  background-repeat:no-repeat}
+.frame img{border-radius:2px}
+
+/* Navegação */
+.nav{position:sticky;top:0;z-index:20;background:rgba(4,10,22,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(27,51,88,.6)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:.04em}
+.brand img{width:44px;height:auto}
+.nav ul{display:flex;gap:28px;list-style:none;font-size:16px}
+.nav ul a{text-decoration:none;color:var(--gelo)}
+.nav ul a:hover{color:var(--branco)}
+.nav .cta-nav{color:var(--branco);background:var(--azul);color:#03111F;font-weight:700;padding:8px 16px;border-radius:999px}
+.nav .cta-nav:hover{color:#03111F;background:var(--azul-claro)}
+@media (max-width:820px){.nav ul li:not(:last-child){display:none}}
+
+/* Hero */
+.hero{position:relative;padding:clamp(40px,6vw,72px) 0 clamp(24px,4vw,48px);overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,4vw,56px);align-items:center}
+.hero h1{font-size:clamp(64px,11vw,148px);font-weight:800;letter-spacing:-.04em;line-height:.92}
+.hero .tagline{font-family:var(--display);font-size:clamp(22px,2.8vw,32px);font-weight:600;color:var(--azul);margin-top:14px;letter-spacing:-.01em;line-height:1.2}
+.hero .lead{margin-top:24px;max-width:46ch}
+.actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:999px;font-family:var(--display);font-weight:600;font-size:17px;text-decoration:none;transition:background-color .2s,border-color .2s,color .2s}
+.btn-primary{background:var(--azul);color:#03111F}
+.btn-primary:hover{background:var(--azul-claro)}
+.btn-ghost{border:1.5px solid var(--linha);color:var(--branco)}
+.btn-ghost:hover{border-color:var(--azul)}
+.btn.dwelt{animation:pulse .5s ease-out}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,162,255,.7)}100%{box-shadow:0 0 0 18px rgba(31,162,255,0)}}
+.hint{margin-top:18px;font-size:15px;color:var(--gelo);display:none;max-width:44ch}
+.gaze-on .hint{display:block}
+.hero-visual{position:relative;justify-self:end;width:100%;max-width:440px}
+.hero-visual img{width:100%;aspect-ratio:1100/1400;object-fit:cover;object-position:center 30%;
+  -webkit-mask-image:radial-gradient(ellipse 56% 50% at 56% 47%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 56% 50% at 56% 47%,#000 45%,transparent 100%)}
+@media (max-width:820px){
+  .hero .wrap{grid-template-columns:1fr}
+  .hero-visual{order:-1;justify-self:stretch;max-width:none;margin:0 calc(var(--gutter)*-1)}
+  .hero-visual img{aspect-ratio:16/10;object-position:center 22%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
+}
+
+/* Mira do olhar (só em telas com mouse) */
+.gaze{position:fixed;left:0;top:0;width:72px;height:72px;margin:-36px 0 0 -36px;pointer-events:none;z-index:30;opacity:0;transition:opacity .25s}
+.gaze-on .gaze.visible{opacity:1}
+.gaze svg{width:100%;height:100%;overflow:visible}
+.gaze .ring{stroke-dasharray:176;stroke-dashoffset:176}
+
+/* Problema */
+.problem-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,80px);align-items:start}
+.problem-grid .text p+p{margin-top:18px}
+.problem-grid .gap{margin-top:28px;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.35;color:var(--branco);max-width:30ch}
+.stats{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:0;border-top:1px solid var(--linha)}
+.stat{display:contents}
+.stat strong,.stat span{padding:22px 0;border-bottom:1px solid var(--linha)}
+.stat strong{padding-right:28px;font-family:var(--display);font-weight:700;font-size:clamp(32px,3.6vw,44px);color:var(--azul);letter-spacing:-.03em;line-height:1;white-space:nowrap;display:flex;align-items:center}
+.stat span{font-size:16px;color:var(--gelo);line-height:1.45;display:flex;align-items:center}
+.source{margin-top:14px;font-size:14px;color:var(--gelo);opacity:.8}
+@media (max-width:820px){.problem-grid{grid-template-columns:1fr}}
+@media (max-width:480px){.stats{grid-template-columns:1fr}.stat strong{border-bottom:0;padding-bottom:6px}.stat span{padding-top:0}}
+
+/* Como funciona */
+.how{background:var(--painel)}
+.flow{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:passo;position:relative}
+.flow li{position:relative;padding:0 20px 0 0}
+.flow li::before{counter-increment:passo;content:counter(passo,decimal-leading-zero);display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:2px solid var(--azul);font-family:var(--display);font-weight:700;font-size:17px;color:var(--azul);background:var(--painel);position:relative;z-index:1;margin-bottom:22px}
+.flow li::after{content:"";position:absolute;top:26px;left:52px;right:0;border-top:2px dashed var(--linha)}
+.flow li:last-child::after{display:none}
+.flow h3{margin-bottom:8px}
+.flow p{font-size:16px;color:var(--gelo)}
+.flow li:nth-child(4)::before{background:var(--azul);color:#03111F}
+@media (max-width:900px){
+  .flow{grid-template-columns:1fr;gap:28px}
+  .flow li{display:grid;grid-template-columns:52px 1fr;column-gap:20px;padding:0}
+  .flow li::before{grid-row:span 2;margin:0}
+  .flow li::after{top:52px;bottom:-28px;left:26px;right:auto;border-top:0;border-left:2px dashed var(--linha)}
+  .flow h3{margin:12px 0 4px}
+}
+.uses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,40px);margin-top:clamp(56px,7vw,88px)}
+.use img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.use h3{margin:20px 0 8px;color:var(--azul);font-size:24px}
+.use p{font-size:16px;color:var(--gelo)}
+.use .tag{display:inline-block;margin-left:8px;font-family:var(--texto);font-size:13px;font-weight:500;color:var(--gelo);border:1px solid var(--linha);border-radius:999px;padding:1px 10px;vertical-align:middle;letter-spacing:0}
+@media (max-width:820px){.uses{grid-template-columns:1fr}}
+
+/* Protótipo */
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,36px)}
+.shots figcaption{margin-top:12px;font-size:15px;color:var(--gelo)}
+.paper{margin-top:clamp(48px,6vw,72px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,4vw,56px);align-items:center}
+.paper h3{font-size:clamp(22px,2.4vw,28px);line-height:1.25}
+.paper .title{margin-top:14px;font-style:italic;color:var(--gelo)}
+.paper img{background:#fff;border-radius:2px}
+.stack{margin-top:clamp(40px,5vw,56px);padding-top:28px;border-top:1px solid var(--linha);display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px}
+.stack b{font-family:var(--display);font-weight:600;margin-right:6px}
+.stack span{font-size:16px;padding:4px 14px;border:1px solid var(--linha);border-radius:999px;color:var(--gelo)}
+@media (max-width:820px){.shots,.paper{grid-template-columns:1fr}}
+
+/* Modelo de negócio */
+.business{background:var(--painel)}
+.biz{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;counter-reset:etapa}
+.biz li{background:var(--abismo);padding:28px 24px 30px}
+.biz li::before{counter-increment:etapa;content:"Etapa " counter(etapa);display:block;font-size:14px;color:var(--azul);font-weight:700;margin-bottom:14px}
+.biz h3{margin-bottom:8px}
+.biz p{font-size:16px;color:var(--gelo)}
+.note{margin-top:22px;font-size:15px;color:var(--gelo);font-style:italic}
+@media (max-width:900px){.biz{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.biz{grid-template-columns:1fr}}
+
+/* Próximos passos */
+.next{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--linha)}
+.next div{padding:28px 32px 30px 0;border-bottom:1px solid var(--linha)}
+.next div:nth-child(odd){border-right:1px solid var(--linha)}
+.next div:nth-child(even){padding-left:32px}
+.next h3{margin-bottom:8px}
+.next p{color:var(--gelo);font-size:17px}
+@media (max-width:720px){.next{grid-template-columns:1fr}.next div:nth-child(odd){border-right:0}.next div:nth-child(even){padding-left:0}}
+
+/* Equipe */
+.team{background:var(--painel)}
+.team-group+.team-group{margin-top:clamp(44px,6vw,64px)}
+.team-group h3{font-size:17px;color:var(--gelo);font-family:var(--texto);font-weight:500;letter-spacing:0;margin-bottom:24px}
+.people{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,36px)}
+.person img{width:100%;aspect-ratio:1;object-fit:cover}
+.person .name{margin-top:16px;font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.01em}
+.person .role{font-size:16px;color:var(--gelo)}
+.person .role a{color:var(--azul-claro);text-underline-offset:3px}
+@media (max-width:820px){.people{grid-template-columns:1fr 1fr}}
+
+/* Contato */
+.contact .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,80px);align-items:start}
+.contact h2{max-width:14ch}
+.contact .lead{margin-top:20px}
+.links{list-style:none;border-top:1px solid var(--linha)}
+.links a{display:grid;grid-template-columns:44px 1fr;align-items:center;gap:18px;padding:22px 4px;border-bottom:1px solid var(--linha);text-decoration:none;transition:background-color .2s}
+.links a:hover{background:rgba(31,162,255,.06)}
+.links svg{width:28px;height:28px;color:var(--azul);justify-self:center}
+.links small{display:block;font-size:14px;color:var(--gelo)}
+.links strong{display:block;font-family:var(--display);font-weight:600;font-size:clamp(17px,2vw,21px);letter-spacing:-.01em;word-break:break-word}
+@media (max-width:820px){.contact .wrap{grid-template-columns:1fr}}
+
+/* Rodapé */
+footer{border-top:1px solid var(--linha);padding:36px 0 44px;font-size:15px;color:var(--gelo)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center}
+footer .brand{font-size:16px}
+footer .brand img{width:36px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="GESTUS, voltar ao início"><img src="assets/img/logo-marca.webp" alt="" width="44" height="27">GESTUS</a>
+    <nav aria-label="Seções">
+      <ul>
+        <li><a href="#problema">O problema</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#prototipo">Protótipo</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a class="cta-nav" href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="inicio">
+    <div class="wrap">
+      <div>
+        <h1>GESTUS</h1>
+        <p class="tagline">Tecnologia assistiva através do olhar</p>
+        <p class="lead">Um software que transforma o olhar e as piscadas em fala, texto e cliques, usando apenas uma webcam comum. Feito para quem tem muito a dizer e poucas formas de se expressar.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#como-funciona" data-dwell>Ver como funciona</a>
+          <a class="btn btn-ghost" href="#contato" data-dwell>Falar com a equipe</a>
+        </div>
+        <p class="hint" id="hint">Experimente: pare o cursor sobre um dos botões por um segundo. É assim que o GESTUS clica com o olhar, sem precisar do mouse.</p>
+      </div>
+      <div class="hero-visual frame">
+        <img src="assets/img/hero-olho.webp" alt="Olho humano com marcações de rastreamento ocular" width="1100" height="1563" fetchpriority="high">
+      </div>
+    </div>
+    <div class="gaze" aria-hidden="true">
+      <svg viewBox="0 0 72 72" fill="none">
+        <circle cx="36" cy="36" r="28" stroke="#1B3358" stroke-width="3"/>
+        <circle class="ring" cx="36" cy="36" r="28" stroke="#1FA2FF" stroke-width="3" stroke-linecap="round" transform="rotate(-90 36 36)"/>
+        <path d="M36 2v14M36 56v14M2 36h14M56 36h14" stroke="#1FA2FF" stroke-width="2"/>
+        <circle cx="36" cy="36" r="3" fill="#1FA2FF"/>
+      </svg>
+    </div>
+  </section>
+
+  <section id="problema">
+    <div class="wrap problem-grid">
+      <div class="text">
+        <h2>Quando o corpo não responde</h2>
+        <p class="lead" style="margin-top:22px">Pessoas com ELA, sequelas de AVC e outras limitações motoras severas muitas vezes perdem a fala e o movimento das mãos. A cabeça continua cheia de coisas para dizer.</p>
+        <p class="muted">Os rastreadores oculares comerciais resolvem parte do problema, mas são caros e dependem de hardware dedicado. Ficam longe da realidade da maioria das famílias, escolas e serviços de saúde.</p>
+        <p class="gap">A lacuna não é só técnica. É de acesso.</p>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><strong>18,6 mi</strong><span>pessoas com deficiência no Brasil, 8,9% da população</span></div>
+          <div class="stat"><strong>1,1 mi</strong><span>com deficiência motora severa</span></div>
+          <div class="stat"><strong>10%</strong><span>das pessoas em países em desenvolvimento têm a tecnologia assistiva de que precisam</span></div>
+          <div class="stat"><strong>R$&nbsp;15–40&nbsp;mil</strong><span>é o custo médio de um rastreador ocular comercial dedicado</span></div>
+        </div>
+        <p class="source">Fontes: IBGE, PNAD Contínua 2022; Organização Mundial da Saúde.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="como-funciona">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Do olhar à ação</h2>
+        <p class="lead">Nada de equipamento especial. A câmera que já vem no notebook é suficiente para o GESTUS entender para onde a pessoa olha e quando ela pisca de propósito.</p>
+      </div>
+      <ol class="flow">
+        <li><h3>Webcam</h3><p>Uma câmera convencional captura o rosto em tempo real.</p></li>
+        <li><h3>Visão computacional</h3><p>O sistema localiza o rosto e processa a região dos olhos.</p></li>
+        <li><h3>Olhar e piscada</h3><p>Estima a direção do olhar e reconhece piscadas como comandos.</p></li>
+        <li><h3>Interpretação</h3><p>O GESTUS traduz esses sinais na intenção da pessoa.</p></li>
+        <li><h3>Ação</h3><p>A intenção vira voz, mensagem ou clique na tela.</p></li>
+      </ol>
+
+      <div class="uses">
+        <article class="use">
+          <div class="frame"><img src="assets/img/uso-comunicar.webp" alt="Olho com marcadores de rastreamento" width="772" height="560" loading="lazy"></div>
+          <h3>Comunicar</h3>
+          <p>Pranchas de comunicação com síntese de voz para expressar necessidades, sentimentos e mensagens.</p>
+        </article>
+        <article class="use">
+          <div class="frame"><img src="assets/img/uso-interagir.webp" alt="Notebook controlado por um cursor guiado pelo olhar" width="772" height="503" loading="lazy"></div>
+          <h3>Interagir</h3>
+          <p>Mouse ocular para usar o computador, estudar e navegar na internet com autonomia.</p>
+        </article>
+        <article class="use">
+          <div class="frame"><img src="assets/img/uso-controlar.webp" alt="Luminária e caixa de som inteligente controladas pelo olhar" width="772" height="504" loading="lazy"></div>
+          <h3>Controlar <span class="tag">em pesquisa</span></h3>
+          <p>Levar a interação para outros dispositivos e para o ambiente da casa.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="prototipo">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Um protótipo que já funciona</h2>
+        <p class="lead">As telas abaixo são do sistema real, em desenvolvimento na Universidade Federal do Ceará.</p>
+      </div>
+      <div class="shots">
+        <figure>
+          <div class="frame"><img src="assets/img/tela-pranchas.webp" alt="Tela do GESTUS com pranchas de comunicação: sim e não, alfabeto, números, escala de intensidade, como me sinto, dor e corpo, perguntas, necessidades, família e o que fazer" width="1200" height="696" loading="lazy"></div>
+          <figcaption>Pranchas de comunicação: sim e não, alfabeto, dor, necessidades, família e mais.</figcaption>
+        </figure>
+        <figure>
+          <div class="frame"><img src="assets/img/tela-rastreamento.webp" alt="Tela do GESTUS rastreando os olhos de um usuário pela webcam" width="1200" height="712" loading="lazy"></div>
+          <figcaption>Rastreamento dos olhos em tempo real pela webcam.</figcaption>
+        </figure>
+      </div>
+
+      <div class="paper">
+        <div>
+          <h3>Artigo completo aceito no Congresso Brasileiro de Engenharia Biomédica (CBEB)</h3>
+          <p class="title">GESTUS: Assistive Interface for Augmentative and Alternative Communication and Gaze-Controlled Mouse Interaction. Proof of Concept and Exploratory Analysis of the Image Pipeline.</p>
+        </div>
+        <div class="frame"><img src="assets/img/artigo-cbeb.webp" alt="Página de submissões do CBEB mostrando o artigo 906 do GESTUS com status aceito e versão final enviada" width="1400" height="266" loading="lazy"></div>
+      </div>
+
+      <div class="stack" aria-label="Base tecnológica">
+        <b>Feito com</b>
+        <span>Webcam convencional</span><span>Python</span><span>OpenCV</span><span>MediaPipe</span><span>PySide6</span><span>Síntese de voz</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="business" id="modelo">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Como o GESTUS chega a quem precisa</h2>
+        <p class="lead">Modelo proposto para disponibilizar, ensinar a usar e acompanhar a aplicação.</p>
+      </div>
+      <ol class="biz">
+        <li><h3>Assinatura</h3><p>Acesso à plataforma e aos recursos do GESTUS.</p></li>
+        <li><h3>Treinamento</h3><p>Vídeo tutorial e orientação inicial para configurar e usar.</p></li>
+        <li><h3>Uso</h3><p>Em clínicas, instituições de assistência, escolas ou em casa, pelo próprio usuário.</p></li>
+        <li><h3>Suporte</h3><p>Acompanhamento e esclarecimento de dúvidas depois da compra.</p></li>
+      </ol>
+      <p class="note">Modelo de negócio em proposta, sujeito a validação técnica, regulatória e de uso.</p>
+    </div>
+  </section>
+
+  <section id="proximos-passos">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Próximos passos</h2>
+        <p class="lead">O que vem pela frente na pesquisa e no desenvolvimento.</p>
+      </div>
+      <div class="next">
+        <div><h3>Validação com usuários</h3><p>Avaliar a usabilidade e a experiência de interação com quem vai usar o sistema no dia a dia.</p></div>
+        <div><h3>Robustez</h3><p>Testar diferentes condições de iluminação, uso de óculos, posicionamento e movimento.</p></div>
+        <div><h3>Precisão</h3><p>Medir de forma sistemática o desempenho da detecção e da classificação do olhar.</p></div>
+        <div><h3>Expansão</h3><p>Explorar novas formas de interação e a integração com outros dispositivos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="team" id="equipe">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Quem faz o GESTUS</h2>
+        <p class="lead">Estudantes e professores da Universidade Federal do Ceará.</p>
+      </div>
+      <div class="people">
+        <div class="person">
+          <div class="frame"><img src="assets/img/equipe-luis.webp" alt="Foto de Luis Carlos" width="480" height="479" loading="lazy"></div>
+          <p class="name">Luis Carlos</p>
+          <p class="role">Estudante de Engenharia de Computação<br><a href="#contato">Contato do projeto</a></p>
+        </div>
+        <div class="person">
+          <div class="frame"><img src="assets/img/equipe-marco.webp" alt="Foto de Marco Antonio" width="480" height="479" loading="lazy"></div>
+          <p class="name">Marco Antonio</p>
+          <p class="role">Estudante de Engenharia de Computação</p>
+        </div>
+        <div class="person">
+          <div class="frame"><img src="assets/img/equipe-camila.webp" alt="Foto da professora Camila" width="480" height="480" loading="lazy"></div>
+          <p class="name">Profa. Camila</p>
+          <p class="role">Professora, UFC</p>
+        </div>
+        <div class="person">
+          <div class="frame"><img src="assets/img/equipe-edilson.webp" alt="Foto do professor Edilson Rocha" width="480" height="480" loading="lazy"></div>
+          <p class="name">Prof. Edilson Rocha</p>
+          <p class="role">Professor, UFC</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contato">
+    <div class="wrap">
+      <div>
+        <h2>Vamos conversar</h2>
+        <p class="lead">Quer testar o GESTUS, apoiar o projeto ou pesquisar com a gente? Fale com Luis Carlos, da equipe.</p>
+      </div>
+      <ul class="links">
+        <li><a href="https://wa.me/5585988438013" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+          <span><small>WhatsApp e telefone</small><strong>(85) 98843-8013</strong></span>
+        </a></li>
+        <li><a href="https://www.linkedin.com/in/luis-carlos-eng-comp" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.4 2H3.6C2.7 2 2 2.7 2 3.6v16.8c0 .9.7 1.6 1.6 1.6h16.8c.9 0 1.6-.7 1.6-1.6V3.6c0-.9-.7-1.6-1.6-1.6ZM8 19H5V9.5h3V19ZM6.5 8.2a1.7 1.7 0 1 1 0-3.5 1.7 1.7 0 0 1 0 3.5ZM19 19h-3v-4.6c0-1.1 0-2.5-1.5-2.5S12.8 13 12.8 14.3V19h-3V9.5h2.8v1.3h.1a3.1 3.1 0 0 1 2.8-1.5c3 0 3.5 2 3.5 4.5V19Z"/></svg>
+          <span><small>LinkedIn</small><strong>linkedin.com/in/luis-carlos-eng-comp</strong></span>
+        </a></li>
+        <li><a href="mailto:gestusprotecs@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+          <span><small>E-mail do projeto</small><strong>gestusprotecs@gmail.com</strong></span>
+        </a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#inicio"><img src="assets/img/logo-marca.webp" alt="" width="36" height="22">GESTUS</a>
+    <p>Pesquisa e desenvolvimento na Universidade Federal do Ceará, com PROTECS e Empreende UFC.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!fine || calm) return;
+
+  var hero = document.querySelector('.hero');
+  var gaze = document.querySelector('.gaze');
+  var ring = gaze.querySelector('.ring');
+  var LEN = 176, DWELL = 1100;
+  hero.classList.add('gaze-on');
+  document.body.classList.add('gaze-on');
+
+  var tx=0, ty=0, x=0, y=0, target=null, start=0, raf=0, done=false;
+
+  function frame(t){
+    x += (tx - x) * 0.22; y += (ty - y) * 0.22;
+    gaze.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    var p = 0;
+    if(target && !done){
+      p = Math.min((t - start) / DWELL, 1);
+      if(p >= 1){
+        done = true;
+        target.classList.add('dwelt');
+        var t0 = target;
+        setTimeout(function(){ t0.classList.remove('dwelt'); t0.click(); }, 260);
+      }
+    }
+    ring.style.strokeDashoffset = done ? 0 : LEN * (1 - p);
+    raf = requestAnimationFrame(frame);
+  }
+
+  hero.addEventListener('pointermove', function(e){
+    tx = e.clientX; ty = e.clientY;
+    if(!gaze.classList.contains('visible')){ x = tx; y = ty; gaze.classList.add('visible'); }
+    var el = e.target.closest('[data-dwell]');
+    if(el !== target){ target = el; start = performance.now(); done = false; }
+  });
+  hero.addEventListener('pointerleave', function(){ gaze.classList.remove('visible'); target = null; });
+  document.addEventListener('scroll', function(){ if(target){ target = null; } }, {passive:true});
+  raf = requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
